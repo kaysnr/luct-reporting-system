@@ -1,0 +1,195 @@
+.student-dashboard {
+  padding: 2rem;
+  background-color: #161625;
+  color: white;
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Header */
+.dashboard-header {
+  background-color: #1e1e2e;
+  padding: 1.5rem;
+  border-bottom: 1px solid #2d2d3f;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.student-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.welcome-text {
+  font-weight: 500;
+}
+
+.student-badge {
+  background: #7c4dff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Content Grid */
+.dashboard-content {
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.8rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Sections */
+.dashboard-section {
+  background: #252536;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border: 1px solid #333;
+}
+
+.dashboard-section h2 {
+  margin-bottom: 1.2rem;
+  font-size: 1.4rem;
+}
+
+/* Attendance */
+.attendance-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #2d2d3f;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: white;
+}
+
+.status-badge.present {
+  background-color: #4caf50;
+}
+
+.status-badge.absent {
+  background-color: #f44336;
+}
+
+/* Reports */
+.report-card {
+  background: #2d2d3f;
+  padding: 16px;
+  border-radius: 10px;
+  margin-top: 12px;
+}
+
+/* Progress */
+.progress-bar-container {
+  margin: 1.5rem 0;
+}
+
+.progress-bar {
+  height: 12px;
+  background: #333;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7c4dff, #4fc3f7);
+}
+
+.progress-label {
+  color: #7c4dff;
+  font-weight: 600;
+}
+
+.topics-list h4 {
+  color: #e0e0ff;
+  margin-bottom: 8px;
+}
+
+/* Stars */
+.stars {
+  display: flex;
+  gap: 4px;
+}
+
+.stars span {
+  font-size: 1.8rem;
+  color: #444;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.stars span.filled {
+  color: #ff9800;
+}
+
+/* Textarea */
+.feedback-form textarea {
+  width: 100%;
+  padding: 10px;
+  background: #2d2d3f;
+  border: 1px solid #444;
+  color: white;
+  border-radius: 8px;
+  resize: vertical;
+}
+
+/* Buttons */
+.submit-btn {
+  background: #7c4dff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.submit-btn:hover {
+  background: #6a3fff;
+}
+
+.logout-btn {
+  background: transparent;
+  color: #ff6b6b;
+  border: 1px solid #ff6b6b;
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background: #ff6b6b;
+  color: white;
+}
+
+.dashboard-footer {
+  text-align: center;
+  padding: 1.5rem;
+}

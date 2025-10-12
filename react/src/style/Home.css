@@ -1,0 +1,231 @@
+/* ===== GLOBAL RESET & TYPOGRAPHY ===== */
+.home-container {
+  background-color: #1e1e2e;
+  color: #e0e0ff;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 0;
+  margin: 0;
+}
+
+/*HEADER */
+.home-header {
+  background-color: #161625;
+  padding: 1.2rem 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.logo-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.main-logo {
+  height: 60px;
+  max-width: 300px;
+  object-fit: contain;
+}
+
+/* ===== HERO SECTION ===== */
+.hero {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: white;
+  line-height: 1.3;
+}
+
+.hero-subtitle {
+  font-size: 1.1rem;
+  color: #a9a9d6;
+  font-weight: 400;
+}
+
+/* ===== ROLE SECTION ===== */
+.section-title {
+  text-align: center;
+  font-size: 1.8rem;
+  margin: 2.5rem 0 1.5rem;
+  color: white;
+  font-weight: 600;
+}
+
+.role-section {
+  padding: 0 1.5rem 2rem;
+}
+
+.role-cards {
+  display: flex;
+  gap: 20px; /* space between boxes */
+  flex-wrap: wrap; /* in case screen is too small */
+  justify-content: center;
+  padding: 20px;
+}
+
+.role-card {
+background: #2d2d3f; /* dark background */
+border-radius: 12px;
+padding: 20px;
+width: 220px; /* smaller width */
+text-align: center;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+transition: transform 0.2s ease;
+color: white;
+}
+
+.role-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  border-color: #7c4dff;
+}
+
+.role-card.student:hover {
+  border-color: #7c4dff;
+  background: linear-gradient(145deg, #252536, #2d2d3f);
+}
+
+.role-card.lecturer:hover {
+  border-color: #4fc3f7;
+  background: linear-gradient(145deg, #252536, #2d2d3f);
+}
+
+.role-card.principal:hover {
+  border-color: #69f0ae;
+  background: linear-gradient(145deg, #252536, #2d2d3f);
+}
+
+.role-card.leader:hover {
+  border-color: #ff9800;
+  background: linear-gradient(145deg, #252536, #2d2d3f);
+}
+
+.role-icon {
+  font-size: 2.2rem;
+}
+
+.role-card h3 {
+  font-size: 1.3rem;
+  margin: 0;
+  color: white;
+}
+
+.role-card p {
+  font-size: 0.95rem;
+  color: #b0b0d0;
+  margin: 0;
+}
+
+
+.role-card:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/*EVENTS SECTION */
+.events-section {
+  padding: 0 1.5rem 3rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.event-card {
+  background: #2d2d3f;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+@media (min-width: 768px) {
+  .event-card {
+    flex-direction: row;
+  }
+}
+
+.event-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+@media (min-width: 768px) {
+  .event-image {
+    width: 300px;
+    height: auto;
+  }
+}
+
+.event-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.event-content h3 {
+  color: white;
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.event-content p {
+  color: #c0c0e0;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.event-date {
+  color: #7c4dff;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* ===== FOOTER ===== */
+.home-footer {
+  text-align: center;
+  padding: 1.5rem;
+  color: #888;
+  font-size: 0.9rem;
+  border-top: 1px solid #333;
+  margin-top: auto;
+}
+
+/* ===== LOADING SCREEN ===== */
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #1e1e2e;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #7c4dff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-screen p {
+  font-size: 1.1rem;
+  color: #ccc;
+}

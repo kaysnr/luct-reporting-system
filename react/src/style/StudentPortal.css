@@ -1,0 +1,210 @@
+/* src/style/StudentPortal.css */
+.student-portal {
+  background: #161625;
+  min-height: 100vh;
+  color: #e0e0ff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.portal-header {
+  background: #1e1e2e;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #2d2d3f;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.portal-header h1 {
+  margin: 0;
+  color: white;
+  font-size: 1.8rem;
+}
+
+.student-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.student-info span {
+  font-size: 1rem;
+}
+
+.course-tag {
+  background: #7c4dff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.dashboard-content {
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.8rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.portal-footer {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.logout-btn {
+  background: transparent;
+  color: #ff6b6b;
+  border: 1px solid #ff6b6b;
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 107, 107, 0.1);
+}
+/* Add these to StudentPortal.css */
+.dashboard-card {
+  background: #252536;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border: 1px solid #333;
+}
+
+.dashboard-card h2 {
+  color: white;
+  margin-top: 0;
+  margin-bottom: 1.2rem;
+  font-size: 1.4rem;
+}
+
+/* Attendance styles */
+.attendance-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.attendance-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #2d2d3f;
+  border-radius: 8px;
+}
+
+.status {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.status.present {
+  background: #4caf50;
+  color: white;
+}
+
+.status.absent {
+  background: #f44336;
+  color: white;
+}
+
+/* Progress styles */
+.progress-container {
+  margin: 1.5rem 0;
+}
+
+.progress-bar {
+  height: 12px;
+  background: #333;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7c4dff, #4fc3f7);
+  border-radius: 6px;
+}
+
+.progress-text {
+  color: #7c4dff;
+  font-weight: 600;
+}
+
+/* Ratings styles */
+.rating-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.rating-section h3 {
+  margin: 0 0 10px 0;
+  color: #e0e0ff;
+}
+
+.star-rating {
+  display: flex;
+  gap: 4px;
+}
+
+.star {
+  font-size: 1.8rem;
+  color: #444;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.star.filled {
+  color: #ff9800;
+}
+
+.rating-form textarea {
+  width: 100%;
+  padding: 10px;
+  background: #2d2d3f;
+  border: 1px solid #444;
+  border-radius: 8px;
+  color: white;
+  resize: vertical;
+}
+
+.submit-rating-btn {
+  background: #7c4dff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.submit-rating-btn:hover {
+  background: #6a3dd8;
+}
+
+/* Report card */
+.report-card {
+  background: #2d2d3f;
+  padding: 16px;
+  border-radius: 10px;
+  margin-top: 12px;
+}
+
+.report-card h3 {
+  color: white;
+  margin-top: 0;
+}
