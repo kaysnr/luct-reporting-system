@@ -1,12 +1,16 @@
-// backend/db.js
-const mysql = require("mysql");
+
+const mysql = require("mysql2"); 
 
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: "localhost",
-  user: "root",
-  password: "secret",
-  database: "luct_reporting_database",
+  host: process.env.DB_HOST || "db4free.net",  
+  user: process.env.DB_USER || "kabelo",       
+  password: process.env.DB_PASSWORD || "mysecret",
+  database: process.env.DB_NAME || "luctreporing",  
+  port: process.env.DB_PORT || 3306,
+  ssl: {
+    rejectUnauthorized: false, 
+  },
 });
 
-module.exports = pool;
+module.exports = pool.promise(); 
