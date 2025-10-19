@@ -1,0 +1,113 @@
+/* ======================
+   PRINCIPAL LECTURER COURSES — ADVANCED STYLING
+   ====================== */
+.report-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.report-title svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--accent);
+}
+
+.dashboard-card {
+  width: 100%;
+  padding: 1.5rem;
+}
+
+.no-classes {
+  text-align: center;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-top: 1.5rem;
+}
+
+/* ======================
+   TABLE STYLING
+   ====================== */
+.table-container {
+  overflow-x: auto;
+  border-radius: 16px;
+  margin-top: 1rem;
+}
+
+.courses-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+  background: rgba(15, 18, 32, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.courses-table th,
+.courses-table td {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.courses-table th {
+  font-weight: 700;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: rgba(74, 222, 128, 0.08);
+}
+
+.courses-table tbody tr:hover {
+  background: rgba(74, 222, 128, 0.05);
+}
+
+.courses-table td {
+  color: var(--text-primary);
+}
+
+.courses-table td strong {
+  color: var(--accent);
+}
+
+/* ======================
+   STATUS & LOADING
+   ====================== */
+.status-message {
+  padding: 12px;
+  border-radius: 12px;
+  margin-top: 1rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.status-message.error {
+  background: rgba(255, 107, 107, 0.15);
+  color: #ff9e9e;
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+/* Loading placeholder */
+.dashboard-card > p {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+
+@media (max-width: 600px) {
+  .courses-table th,
+  .courses-table td {
+    padding: 12px 8px;
+    font-size: 0.9rem;
+  }
+
+  .report-title {
+    font-size: 1.4rem;
+  }
+}

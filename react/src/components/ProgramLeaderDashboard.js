@@ -4,8 +4,6 @@ import ProgramLeaderCourses from "./ProgramLeaderCourses";
 import ProgramLeaderReports from "./ProgramLeaderReports";
 import ProgramLeaderMonitoring from "./ProgramLeaderMonitoring";
 import ProgramLeaderClasses from "./ProgramLeaderClasses";
-import ProgramLeaderLectures from "./ProgramLeaderLectures";
-import ProgramLeaderRatings from "./ProgramLeaderRatings";
 import "../style/ProgramLeaderPortal.css";
 
 function ProgramLeaderDashboard({ programLeader, onLogout }) {
@@ -16,8 +14,7 @@ function ProgramLeaderDashboard({ programLeader, onLogout }) {
     { id: "reports", label: "📝 Reports" },
     { id: "monitoring", label: "📊 Monitoring" },
     { id: "classes", label: "🏫 Classes" },
-    { id: "lectures", label: "🎓 Lectures" },
-    { id: "ratings", label: "⭐ Ratings" }
+   
   ];
 
   return (
@@ -50,8 +47,6 @@ function ProgramLeaderDashboard({ programLeader, onLogout }) {
         {activeTab === "reports" && <ProgramLeaderReports programLeaderId={programLeader.id} />}
         {activeTab === "monitoring" && <ProgramLeaderMonitoring programLeaderId={programLeader.id} />}
         {activeTab === "classes" && <ProgramLeaderClasses programLeaderId={programLeader.id} />}
-        {activeTab === "lectures" && <ProgramLeaderLectures programLeaderId={programLeader.id} />}
-        {activeTab === "ratings" && <ProgramLeaderRatings programLeaderId={programLeader.id} />}
       </main>
 
       {/* Logout */}

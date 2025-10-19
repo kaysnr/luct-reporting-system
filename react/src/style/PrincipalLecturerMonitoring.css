@@ -1,0 +1,319 @@
+/* ======================
+   PRINCIPAL LECTURER MONITORING — ADVANCED STYLING
+   ====================== */
+.report-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.report-title svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--accent);
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+.dashboard-card {
+  width: 100%;
+  padding: 1.5rem;
+}
+
+.no-classes {
+  text-align: center;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-top: 1.5rem;
+}
+
+/* ======================
+   STATUS MESSAGES
+   ====================== */
+.status-message {
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.status-message.success {
+  background: rgba(74, 222, 128, 0.15);
+  color: #c6f9d0;
+  border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+.status-message.error {
+  background: rgba(255, 107, 107, 0.15);
+  color: #ff9e9e;
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+/* ======================
+   REPORT CARD
+   ====================== */
+.report-card {
+  background: rgba(15, 18, 32, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 1.6rem;
+  margin-bottom: 1.8rem;
+  transition: var(--transition);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.report-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 6px 16px rgba(74, 222, 128, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Header */
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.report-info {
+  flex: 1;
+  min-width: 250px;
+}
+
+.report-course {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0 0 0.4rem;
+  color: var(--text-primary);
+}
+
+.report-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 0.6rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.lecturer-email {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Actions */
+.report-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.attendance-badge {
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-weight: 600;
+  color: white;
+  font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 100px;
+}
+
+.attendance-status {
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+.expand-btn {
+  background: rgba(74, 222, 128, 0.15);
+  color: #c6f9d0;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-weight: bold;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.expand-btn:hover {
+  background: rgba(74, 222, 128, 0.25);
+  transform: scale(1.1);
+}
+
+/* Details */
+.report-details {
+  margin: 1.4rem 0;
+  padding-top: 1.4rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+.report-details p {
+  margin: 0.6rem 0;
+}
+
+.report-details p strong {
+  color: var(--accent);
+  margin-right: 6px;
+}
+
+/* ======================
+   FEEDBACK SECTION
+   ====================== */
+.feedback-section {
+  margin-top: 1.4rem;
+  padding-top: 1.4rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+/* Existing Feedback */
+.existing-feedback .feedback-content {
+  background: rgba(74, 222, 128, 0.08);
+  border-left: 3px solid var(--accent);
+  padding: 1rem;
+  border-radius: 0 8px 8px 0;
+}
+
+.existing-feedback p {
+  margin: 0 0 0.6rem;
+  font-style: italic;
+  color: var(--text-primary);
+}
+
+.feedback-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.feedback-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+/* New Feedback */
+.new-feedback {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.feedback-textarea {
+  width: 100%;
+  padding: 12px;
+  background: rgba(10, 12, 24, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 80px;
+  outline: none;
+  transition: var(--transition);
+}
+
+.feedback-textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.25);
+  background: rgba(15, 18, 32, 0.7);
+}
+
+.submit-feedback-btn {
+  align-self: flex-start;
+  padding: 8px 18px;
+  background: linear-gradient(135deg, var(--accent), #34d399);
+  color: #0f172a;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 4px 10px rgba(74, 222, 128, 0.3);
+}
+
+.submit-feedback-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(74, 222, 128, 0.4);
+}
+
+.submit-feedback-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Action buttons */
+.btn-edit,
+.btn-delete {
+  padding: 4px 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-edit {
+  background: rgba(74, 222, 128, 0.15);
+  color: #c6f9d0;
+}
+
+.btn-edit:hover {
+  background: rgba(74, 222, 128, 0.25);
+}
+
+.btn-delete {
+  background: rgba(255, 107, 107, 0.15);
+  color: #ff9e9e;
+  margin-left: 6px;
+}
+
+.btn-delete:hover {
+  background: rgba(255, 107, 107, 0.25);
+}
+
+/* ======================
+   RESPONSIVE
+   ====================== */
+@media (max-width: 768px) {
+  .report-header {
+    flex-direction: column;
+  }
+
+  .report-actions {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .attendance-badge {
+    flex-direction: row;
+    gap: 6px;
+    min-width: auto;
+  }
+}

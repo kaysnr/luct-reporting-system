@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import Classes from "./Classes";
 import Reports from "./Reports";
-import Monitoring from "./Monitoring";
 import LecturerRatings from "./LecturerRatings";
 import "../style/LecturerPortal.css";
 
@@ -12,7 +11,6 @@ function LecturerDashboard({ lecturer, onLogout }) {
   const tabs = [
     { id: "classes", label: "📚 Classes" },
     { id: "reports", label: "📝 Reports" },
-    { id: "monitoring", label: "📊 Monitoring" },
     { id: "ratings", label: "⭐ Ratings" }
   ];
 
@@ -44,7 +42,6 @@ function LecturerDashboard({ lecturer, onLogout }) {
       <main className="dashboard-content">
         {activeTab === "classes" && <Classes lecturerId={lecturer.id} />}
         {activeTab === "reports" && <Reports lecturerId={lecturer.id} />}
-        {activeTab === "monitoring" && <Monitoring lecturerId={lecturer.id} />}
         {activeTab === "ratings" && <LecturerRatings lecturerId={lecturer.id} />}
       </main>
 

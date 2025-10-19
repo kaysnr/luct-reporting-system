@@ -1,16 +1,14 @@
-
-const mysql = require("mysql2"); 
+const mysql = require("mysql");
+const { promisify } = require("util");
 
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: process.env.DB_HOST || "db4free.net",  
-  user: process.env.DB_USER || "kabelo",       
-  password: process.env.DB_PASSWORD || "mysecret",
-  database: process.env.DB_NAME || "luctreporing",  
+  host: process.env.DB_HOST || "localhost",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "",
+  database: process.env.DB_NAME || "luct_reporting_database",
   port: process.env.DB_PORT || 3306,
-  ssl: {
-    rejectUnauthorized: false, 
-  },
 });
+pool.query = promisify(pool.query).bind(pool);
 
-module.exports = pool.promise(); 
+module.exports = pool;

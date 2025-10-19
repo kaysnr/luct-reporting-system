@@ -3,174 +3,148 @@ import React, { useState, useEffect } from "react";
 import "../style/LecturerPortal.css";
 
 function LecturerRatings({ lecturerId }) {
-  const [classes, setClasses] = useState([]);
-  const [ratings, setRatings] = useState({}); // { classId: ratingValue }
+  const [ratings, setRatings] = useState([]);
+  const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-  const [message, setMessage] = useState("");
+  const [error, setError] = useState(null);
 
-  // Fetch lecturer's classes
   useEffect(() => {
-    if (!lecturerId) return;
+    if (!lecturerId) {
+      setError("Lecturer ID is missing");
+      setLoading(false);
+      return;
+    }
 
-    const fetchClasses = async () => {
+    const fetchData = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/classes`);
-        if (!res.ok) throw new Error("Failed to load classes");
-        const data = await res.json();
-        const assigned = data.filter(cls => cls.lecturer_id === lecturerId);
-        setClasses(assigned);
+        // Fetch ratings given TO this lecturer
+        const ratingsRes = await fetch(
+          `http://localhost:5000/api/feedback/ratings/${lecturerId}`
+        );
+        if (!ratingsRes.ok) throw new Error("Failed to load ratings");
+        const ratingsData = await ratingsRes.json();
 
-        // Initialize ratings state
-        const initialRatings = {};
-        assigned.forEach(cls => {
-          initialRatings[cls.class_id] = "";
-        });
-        setRatings(initialRatings);
+        // Fetch complaints filed AGAINST this lecturer
+        const complaintsRes = await fetch(
+          `http://localhost:5000/api/feedback/complaints/${lecturerId}`
+        );
+        if (!complaintsRes.ok) throw new Error("Failed to load complaints");
+        const complaintsData = await complaintsRes.json();
+
+        setRatings(ratingsData);
+        setComplaints(complaintsData);
       } catch (err) {
-        console.error("Error:", err);
-        setMessage("❌ Failed to load classes");
+        console.error("Error fetching feedback:", err);
+        setError("❌ Failed to load feedback. Please try again later.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchClasses();
+    fetchData();
   }, [lecturerId]);
 
-  const handleRatingChange = (classId, value) => {
-    setRatings(prev => ({ ...prev, [classId]: value }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setMessage("");
-
-    try {
-      // Submit rating for each class that has a rating
-      const promises = classes
-        .filter(cls => ratings[cls.class_id])
-        .map(cls => {
-          const payload = {
-            user_id: lecturerId,
-            class_id: cls.class_id,
-            rating_value: parseFloat(ratings[cls.class_id]),
-            // comments not included — table doesn't support it
-          };
-
-          return fetch("http://localhost:5000/api/ratings", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          });
-        });
-
-      if (promises.length === 0) {
-        setMessage("⚠️ Please rate at least one class.");
-        setSubmitting(false);
-        return;
-      }
-
-      await Promise.all(promises);
-      setMessage("✅ Ratings submitted successfully!");
-      
-      // Reset ratings
-      const resetRatings = {};
-      classes.forEach(cls => {
-        resetRatings[cls.class_id] = "";
-      });
-      setRatings(resetRatings);
-    } catch (err) {
-      console.error("Submission error:", err);
-      setMessage("❌ Failed to submit ratings");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleExport = async () => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/reports/export?lecturerId=${lecturerId}`);
-      if (!response.ok) throw new Error("Export failed");
-      
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `lecture_reports_lecturer_${lecturerId}.xlsx`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (err) {
-      console.error("Export error:", err);
-      alert("❌ Failed to export reports");
-    }
-  };
-
   if (loading) {
-    return <div className="dashboard-card"><p>Loading your classes...</p></div>;
+    return (
+      <div className="dashboard-card">
+        <h2 className="report-title">📊 My Feedback</h2>
+        <p>Loading your ratings and complaints...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="dashboard-card">
+        <h2 className="report-title">📊 My Feedback</h2>
+        <div className="status-message error">{error}</div>
+      </div>
+    );
   }
 
   return (
     <div className="dashboard-card">
-      <h2 className="report-title">⭐ Rate Class Performance</h2>
+      <h2 className="report-title">📊 My Feedback</h2>
 
-      {message && (
-        <div className={`status-message ${message.includes("✅") ? "success" : "error"}`}>
-          {message}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit}>
-        {classes.map(cls => (
-          <div key={cls.class_id} className="rating-class-card">
-            <h3>{cls.class_name} ({cls.course_id})</h3>
-            <div className="rating-options">
-              {[1, 2, 3, 4, 5].map(star => (
-                <button
-                  type="button"
-                  key={star}
-                  className={`star-btn ${ratings[cls.class_id] >= star ? 'active' : ''}`}
-                  onClick={() => handleRatingChange(cls.class_id, star)}
-                  disabled={submitting}
-                >
-                  ★
-                </button>
-              ))}
-              <span className="rating-label">
-                {ratings[cls.class_id] === 1 && "Poor"}
-                {ratings[cls.class_id] === 2 && "Fair"}
-                {ratings[cls.class_id] === 3 && "Good"}
-                {ratings[cls.class_id] === 4 && "Very Good"}
-                {ratings[cls.class_id] === 5 && "Excellent"}
-              </span>
-            </div>
-          </div>
-        ))}
-
-        {classes.length === 0 ? (
-          <p className="no-classes">You have no assigned classes to rate.</p>
+      {/* Ratings Table */}
+      <div className="feedback-section">
+        <h3>⭐ Student Ratings</h3>
+        {ratings.length === 0 ? (
+          <p className="no-feedback">No ratings received yet.</p>
         ) : (
-          <button
-            type="submit"
-            className="submit-btn"
-            disabled={submitting}
-          >
-            {submitting ? "Submitting..." : "Submit Ratings"}
-          </button>
+          <div className="table-container">
+            <table className="feedback-table">
+              <thead>
+                <tr>
+                  <th>Student Name</th>
+                  <th>Email</th>
+                  <th>Rating</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ratings.map((rating) => (
+                  <tr key={rating.id}>
+                    <td>{rating.student_name || "Anonymous"}</td>
+                    <td>{rating.student_email}</td>
+                    <td>
+                      {[...Array(5)].map((_, i) => (
+                        <span
+                          key={i}
+                          className={`star ${i < rating.rating_value ? "filled" : ""}`}
+                        >
+                          ★
+                        </span>
+                      ))}
+                    </td>
+                    <td>{new Date(rating.created_at).toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
-      </form>
+      </div>
 
-      <div className="export-section">
-        <h3 className="export-title">📥 Export Reports</h3>
-        <button className="export-btn" onClick={handleExport}>
-          📊 Export to Excel
-        </button>
-        <p className="export-desc">
-          Download all your lecture reports in Excel format
-        </p>
+      {/* Complaints Table */}
+      <div className="feedback-section">
+        <h3>📢 Student Complaints</h3>
+        {complaints.length === 0 ? (
+          <p className="no-feedback">No complaints received yet.</p>
+        ) : (
+          <div className="table-container">
+            <table className="feedback-table">
+              <thead>
+                <tr>
+                  <th>Student Name</th>
+                  <th>Email</th>
+                  <th>Complaint</th>
+                  <th>Status</th>
+                  <th>Submitted</th>
+                </tr>
+              </thead>
+              <tbody>
+                {complaints.map((complaint) => (
+                  <tr key={complaint.id}>
+                    <td>{complaint.student_name || "Anonymous"}</td>
+                    <td>{complaint.student_email}</td>
+                    <td>
+                      <div className="complaint-text">
+                        {complaint.complaint_text}
+                      </div>
+                    </td>
+                    <td>
+                      <span className={`status-badge ${complaint.status || "pending"}`}>
+                        {complaint.status || "Pending"}
+                      </span>
+                    </td>
+                    <td>{new Date(complaint.created_at).toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

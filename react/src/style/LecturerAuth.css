@@ -1,124 +1,109 @@
-/* src/style/LecturerAuth.css */
-.lecturer-auth-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* ======================
+   GLOBAL VARIABLES & RESET
+   ====================== */
+:root {
+  --bg-primary: #0c0f1a;
+  --card-bg: rgba(25, 28, 48, 0.85);
+  --text-primary: #f0f4ff;
+  --text-secondary: #a0a9c9;
+  --accent: #ff6b6b; /* Lecturer-specific accent */
+  --accent-hover: #ff8585;
+  --error: #ff6b6b;
+  --border-radius: 18px;
+  --transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(135deg, var(--bg-primary), #1a1f36);
+  color: var(--text-primary);
+  font-family: 'Segoe UI', system-ui, sans-serif;
   min-height: 100vh;
-  background: linear-gradient(135deg, #0f2027 0%, #203a43 100%);
+}
+
+/* ======================
+   CONTAINER & CARD
+   ====================== */
+.lecturer-auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 20px;
 }
 
 .lecturer-auth-card {
-  background: #1a2a36;
-  border-radius: 16px;
+  width: 100%;
+  max-width: 480px;
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
   padding: 2.5rem;
-  width: 100%;
-  max-width: 450px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-  color: white;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  overflow: hidden;
 }
 
-.lecturer-auth-card h2 {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  font-weight: 600;
-  color: #a9d6e5;
+.lecturer-auth-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 107, 107, 0.1) 0%, transparent 70%);
+  z-index: 0;
+  pointer-events: none;
 }
 
-input {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 16px;
-  background: #2c3e50;
-  border: 1px solid #34495e;
-  border-radius: 8px;
-  color: white;
-}
-
-.auth-btn {
-  width: 100%;
-  padding: 12px;
-  background: #00b4d8;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.auth-btn:hover {
-  background: #0096c7;
-}
-
-.error-message {
-  background: #ff4d4d;
-  color: white;
-  padding: 10px;
-  border-radius: 6px;
-  margin-bottom: 16px;
-  text-align: center;
-  font-weight: 500;
-}
-
-.demo-note {
-  margin-top: 16px;
-  font-size: 0.85rem;
-  color: #a9d6e5;
-  text-align: center;
-}
-
-.demo-note strong {
-  color: #00b4d8;
-}
-/* src/style/LecturerAuth.css */
-
-.lecturer-auth-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: #0f172a;
-  padding: 20px;
-}
-
-.lecturer-auth-card {
-  background: #1e293b;
-  border-radius: 12px;
-  padding: 32px;
-  width: 100%;
-  max-width: 450px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-  color: #f1f5f9;
-}
-
+/* ======================
+   HEADER & TABS
+   ====================== */
 .auth-header {
   display: flex;
-  justify-content: center;
-  margin-bottom: 24px;
-  gap: 4px;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 6px;
+  border-radius: 14px;
+  margin-bottom: 2rem;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .tab-btn {
-  background: #334155;
+  flex: 1;
+  padding: 10px 24px;
+  background: transparent;
   border: none;
-  padding: 8px 20px;
-  border-radius: 6px;
-  color: #cbd5e1;
-  font-weight: 500;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 1rem;
   cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.tab-btn:hover:not(:disabled) {
-  background: #475569;
+  border-radius: 12px;
+  transition: var(--transition);
+  position: relative;
+  z-index: 1;
 }
 
 .tab-btn.active {
-  background: #8b5cf6; /* Purple accent for lecturer (different from student blue) */
-  color: #0f172a;
-  font-weight: 600;
+  color: white;
+  background: var(--accent);
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+  transform: translateY(-2px);
+}
+
+.tab-btn:hover:not(.active) {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .tab-btn:disabled {
@@ -126,71 +111,144 @@ input {
   cursor: not-allowed;
 }
 
+/* ======================
+   TYPOGRAPHY
+   ====================== */
 .lecturer-auth-card h2 {
   text-align: center;
-  margin-bottom: 24px;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #e2e8f0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1.8rem;
+  color: var(--text-primary);
+  position: relative;
+  z-index: 1;
+}
+
+/* ======================
+   FORM STYLING
+   ====================== */
+.lecturer-auth-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  position: relative;
+  z-index: 1;
 }
 
 .lecturer-auth-card input {
   width: 100%;
-  padding: 12px 16px;
-  margin-bottom: 16px;
-  background: #334155;
-  border: 1px solid #475569;
-  border-radius: 8px;
-  color: white;
+  padding: 14px 18px;
+  background: rgba(15, 18, 32, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  color: var(--text-primary);
   font-size: 1rem;
-  box-sizing: border-box;
+  outline: none;
+  transition: var(--transition);
+  backdrop-filter: blur(4px);
 }
 
 .lecturer-auth-card input::placeholder {
-  color: #94a3b8;
+  color: var(--text-secondary);
 }
 
 .lecturer-auth-card input:focus {
-  outline: none;
-  border-color: #8b5cf6; /* Purple focus border */
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
-  background: #2d3748;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.25);
+  background: rgba(20, 24, 42, 0.7);
 }
 
+/* Role is fixed — no select needed, so no styling for <select> */
+
+/* ======================
+   ERROR MESSAGE
+   ====================== */
 .error-message {
-  background: #450a0a;
-  color: #fecaca;
-  padding: 10px;
-  border-radius: 6px;
-  margin-bottom: 20px;
+  background: rgba(255, 107, 107, 0.15);
+  color: #ff9e9e;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 0.95rem;
   text-align: center;
-  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(255, 107, 107, 0.3);
+  animation: shake 0.5s ease;
 }
 
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* ======================
+   SUBMIT BUTTON
+   ====================== */
 .auth-btn {
-  width: 100%;
   padding: 14px;
-  background: linear-gradient(135deg, #8b5cf6, #7c3aed); /* Purple gradient */
-  color: #0f172a;
+  background: linear-gradient(135deg, var(--accent), #e05a5a);
+  color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 14px;
+  font-size: 1.05rem;
   font-weight: 600;
-  font-size: 1rem;
   cursor: pointer;
-  transition: all 0.2s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: var(--transition);
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+  position: relative;
+  overflow: hidden;
+  margin-top: 8px;
 }
 
 .auth-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #7c3aed, #6d28d9);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+}
+
+.auth-btn:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .auth-btn:disabled {
   opacity: 0.7;
   cursor: not-allowed;
   transform: none;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.2);
+}
+
+/* Loading spinner inside button */
+.auth-btn:disabled::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(0deg);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ======================
+   RESPONSIVE DESIGN
+   ====================== */
+@media (max-width: 500px) {
+  .lecturer-auth-card {
+    padding: 1.8rem;
+  }
+
+  .lecturer-auth-card h2 {
+    font-size: 1.6rem;
+  }
+
+  .tab-btn {
+    padding: 8px 16px;
+    font-size: 0.95rem;
+  }
 }

@@ -1,7 +1,404 @@
-import React from "react";
-import "../style/StudentDashboard.css"; // Import the CSS file
+import React, { useState, useEffect } from "react";
+import "../style/StudentDashboard.css";
 
+// ======================
+// NAVIGATION COMPONENT
+// ======================
+const DashboardNav = ({ activeTab, onTabChange }) => {
+  return (
+    <nav className="dashboard-nav">
+      <button
+        className={activeTab === 'overview' ? 'nav-btn active' : 'nav-btn'}
+        onClick={() => onTabChange('overview')}
+      >
+        Overview
+      </button>
+      <button
+        className={activeTab === 'ratings' ? 'nav-btn active' : 'nav-btn'}
+        onClick={() => onTabChange('ratings')}
+      >
+        Rate Lecturers
+      </button>
+      <button
+        className={activeTab === 'complaints' ? 'nav-btn active' : 'nav-btn'}
+        onClick={() => onTabChange('complaints')}
+      >
+        File Complaints
+      </button>
+    </nav>
+  );
+};
+
+// ======================
+// OVERVIEW PAGE
+// ======================
+const OverviewPage = () => {
+  return (
+    <div className="overview-page">
+      <h2>Welcome to Your Dashboard</h2>
+      <p>Select "Rate Lecturers" or "File Complaints" from the navigation above to get started.</p>
+      <div className="overview-cards-grid">
+        <div className="overview-card">
+          <div className="card-icon">📝</div>
+          <h3>Reports</h3>
+          <p>View lecture summaries and recommendations.</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ======================
+// RATINGS PAGE
+// ======================
+const RatingsPage = ({ student, lecturers, loadingLecturers }) => {
+  const [ratingValue, setRatingValue] = useState(0);
+  const [selectedLecturerId, setSelectedLecturerId] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const renderStars = (rating, setRating) => (
+    [1, 2, 3, 4, 5].map((star) => (
+      <span
+        key={star}
+        onClick={() => setRating(star)}
+        className={`star ${star <= rating ? 'filled' : ''}`}
+      >
+        ★
+      </span>
+    ))
+  );
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedLecturerId || !ratingValue) {
+      alert("Please select a lecturer and provide a rating.");
+      return;
+    }
+
+    setSubmitting(true);
+    const payload = {
+      student_id: student.id,
+      lecturer_id: selectedLecturerId,
+      rating_value: ratingValue,
+    };
+
+    try {
+      const res = await fetch("http://localhost:5000/api/ratings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        setSuccess(true);
+        setTimeout(() => setSuccess(false), 3000);
+        setRatingValue(0);
+        setSelectedLecturerId("");
+      } else {
+        const data = await res.json();
+        alert("Submission failed: " + (data.error || "Unknown error"));
+      }
+    } catch (err) {
+      alert("Network error. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="ratings-page">
+      <h2>Rate Your Lecturer</h2>
+      <form onSubmit={handleSubmit} className="feedback-form">
+        <div className="form-group">
+          <label><strong>Select Lecturer</strong></label>
+          {loadingLecturers ? (
+            <p>Loading lecturers...</p>
+          ) : (
+            <select
+              value={selectedLecturerId}
+              onChange={(e) => setSelectedLecturerId(e.target.value)}
+              required
+            >
+              <option value="">-- Choose a lecturer --</option>
+              {lecturers.map((lec) => (
+                <option key={lec.id} value={lec.id}>
+                  {lec.name}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
+
+        <div className="form-group">
+          <label><strong>Lecturer Rating</strong></label>
+          <div className="stars">{renderStars(ratingValue, setRatingValue)}</div>
+        </div>
+
+        <button type="submit" className="submit-btn" disabled={submitting}>
+          {submitting ? "Submitting..." : "Submit Rating"}
+        </button>
+
+        {success && (
+          <div className="success-message">
+            ✅ Rating submitted successfully!
+          </div>
+        )}
+      </form>
+    </div>
+  );
+};
+
+// ======================
+// COMPLAINTS PAGE (FULLY UPDATED)
+// ======================
+const ComplaintsPage = ({ student, lecturers, loadingLecturers }) => {
+  const [complaints, setComplaints] = useState([]);
+  const [loadingComplaints, setLoadingComplaints] = useState(false);
+  const [complaintText, setComplaintText] = useState("");
+  const [selectedLecturerId, setSelectedLecturerId] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [view, setView] = useState('form'); // 'form' or 'past'
+
+  const fetchComplaints = async () => {
+    setLoadingComplaints(true);
+    try {
+      const res = await fetch(`http://localhost:5000/api/complaints/student/${student.id}`);
+      if (res.ok) {
+        const data = await res.json();
+        setComplaints(Array.isArray(data) ? data : []);
+      } else {
+        setComplaints([]);
+      }
+    } catch (err) {
+      console.error("Failed to fetch complaints", err);
+      setComplaints([]);
+    } finally {
+      setLoadingComplaints(false);
+    }
+  };
+
+  const isEditable = (createdAt) => {
+    const now = new Date();
+    const created = new Date(createdAt);
+    return (now - created) / (1000 * 60) <= 5;
+  };
+
+  const handleFileComplaint = async (e) => {
+    e.preventDefault();
+    if (!selectedLecturerId || !complaintText.trim()) {
+      alert("Please select a lecturer and enter your complaint.");
+      return;
+    }
+
+    setSubmitting(true);
+    const payload = {
+      student_id: student.id,
+      lecturer_id: selectedLecturerId,
+      complaint_text: complaintText,
+    };
+
+    try {
+      const res = await fetch("http://localhost:5000/api/complaints", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        alert("Complaint filed successfully!");
+        setComplaintText("");
+        setSelectedLecturerId("");
+      } else {
+        const data = await res.json();
+        alert("Filing failed: " + (data.error || "Unknown error"));
+      }
+    } catch (err) {
+      alert("Network error. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Delete this complaint? (Only allowed within 5 minutes of filing)")) return;
+    try {
+      const res = await fetch(`http://localhost:5000/api/complaints/${id}?student_id=${student.id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setComplaints(prev => prev.filter(c => c.id !== id));
+      } else {
+        const data = await res.json();
+        alert("Deletion failed: " + (data.error || "Unknown error"));
+      }
+    } catch (err) {
+      alert("Network error.");
+    }
+  };
+
+  const handleEdit = async (id, currentText) => {
+    const newText = prompt("Edit your complaint:", currentText);
+    if (newText === null || newText.trim() === "") return;
+    try {
+      const res = await fetch(`http://localhost:5000/api/complaints/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ student_id: student.id, complaint_text: newText.trim() }),
+      });
+      if (res.ok) {
+        alert("Updated!");
+        const fresh = await fetch(`http://localhost:5000/api/complaints/student/${student.id}`);
+        const data = await fresh.json();
+        setComplaints(Array.isArray(data) ? data : []);
+      } else {
+        const data = await res.json();
+        alert("Update failed: " + (data.error || "Unknown error"));
+      }
+    } catch (err) {
+      alert("Network error.");
+    }
+  };
+
+  // Form View
+  if (view === 'form') {
+    return (
+      <div className="complaints-page">
+        <h2>File a New Complaint</h2>
+        <form onSubmit={handleFileComplaint} className="complaint-form">
+          <div className="form-group">
+            <label><strong>Select Lecturer</strong></label>
+            {loadingLecturers ? (
+              <p>Loading lecturers...</p>
+            ) : (
+              <select
+                value={selectedLecturerId}
+                onChange={(e) => setSelectedLecturerId(e.target.value)}
+                required
+              >
+                <option value="">-- Choose a lecturer --</option>
+                {lecturers.map((lec) => (
+                  <option key={lec.id} value={lec.id}>
+                    {lec.name}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+          <div className="form-group">
+            <label><strong>Your Complaint</strong></label>
+            <textarea
+              placeholder="Describe your concern about the lecturer..."
+              rows="4"
+              value={complaintText}
+              onChange={(e) => setComplaintText(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit" className="submit-btn" disabled={submitting}>
+            {submitting ? "Filing..." : "File Complaint"}
+          </button>
+        </form>
+
+        <button
+          onClick={() => {
+            fetchComplaints();
+            setView('past');
+          }}
+          className="view-past-btn"
+        >
+          📂 View Past Complaints
+        </button>
+      </div>
+    );
+  }
+
+  // Past Complaints View
+  return (
+    <div className="complaints-page">
+      <h2>📂 My Past Complaints</h2>
+
+      <button
+        onClick={() => setView('form')}
+        className="back-to-form-btn"
+      >
+        ← Back to File Complaint
+      </button>
+
+      {loadingComplaints ? (
+        <p>Loading your complaints...</p>
+      ) : complaints.length === 0 ? (
+        <p>You haven’t filed any complaints yet.</p>
+      ) : (
+        <div className="complaints-list">
+          {complaints.map((c) => (
+            <div key={c.id} className="complaint-card">
+              <div className="complaint-header">
+                <strong>To:</strong> {c.lecturer_name}
+                <span className={`status-badge status-${c.status}`}>{c.status}</span>
+              </div>
+              <div className="complaint-body">{c.complaint_text}</div>
+              <div className="complaint-meta">
+                Filed: {new Date(c.created_at).toLocaleString()}
+                {c.updated_at !== c.created_at && (
+                  <span> • Updated: {new Date(c.updated_at).toLocaleString()}</span>
+                )}
+              </div>
+              {isEditable(c.created_at) && (
+                <div className="complaint-actions">
+                  <button className="edit-btn" onClick={() => handleEdit(c.id, c.complaint_text)}>
+                    Edit
+                  </button>
+                  <button className="delete-btn" onClick={() => handleDelete(c.id)}>
+                    Delete
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ======================
+// MAIN DASHBOARD COMPONENT
+// ======================
 function StudentDashboard({ student, onLogout }) {
+  const [activeTab, setActiveTab] = useState('overview');
+  const [lecturers, setLecturers] = useState([]);
+  const [loadingLecturers, setLoadingLecturers] = useState(true);
+
+  useEffect(() => {
+    const fetchLecturers = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/lecturers");
+        if (res.ok) {
+          const data = await res.json();
+          setLecturers(Array.isArray(data) ? data : []);
+        }
+      } catch (err) {
+        console.error("Failed to fetch lecturers", err);
+        setLecturers([]);
+      } finally {
+        setLoadingLecturers(false);
+      }
+    };
+    fetchLecturers();
+  }, []);
+
+  if (!student || !student.id) {
+    return (
+      <div style={{ padding: '2rem', color: 'red', textAlign: 'center' }}>
+        <h2>⚠️ Invalid Session</h2>
+        <p>Please log in again.</p>
+      </div>
+    );
+  }
+
+  const course = student.course || "N/A";
+  const faculty = student.faculty || "N/A";
+
   return (
     <div className="student-dashboard">
       <header className="dashboard-header">
@@ -9,116 +406,29 @@ function StudentDashboard({ student, onLogout }) {
         <div className="student-info">
           <span className="welcome-text">Welcome, {student.firstName}!</span>
           <span className="student-badge">
-            {student.course} • {student.faculty}
+            {course} • {faculty}
           </span>
         </div>
       </header>
 
+      <DashboardNav activeTab={activeTab} onTabChange={setActiveTab} />
+
       <main className="dashboard-content">
-        {/* Attendance */}
-        <section className="dashboard-section">
-          <h2>Attendance Records</h2>
-          <div className="attendance-list">
-            {[
-              { date: "2025-09-20", lecture: "React Hooks", status: "Present" },
-              { date: "2025-09-22", lecture: "State Management", status: "Absent" },
-              { date: "2025-09-25", lecture: "Routing", status: "Present" },
-            ].map((record, index) => (
-              <div key={index} className="attendance-item">
-                <div>
-                  <strong>{record.lecture}</strong>
-                  <div>{record.date}</div>
-                </div>
-                <span
-                  className={`status-badge ${
-                    record.status === "Present" ? "present" : "absent"
-                  }`}
-                >
-                  {record.status}
-                </span>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Lecture Reports */}
-        <section className="dashboard-section">
-          <h2>Lecture Reports</h2>
-          {[
-            {
-              id: 1,
-              title: "Advanced React Patterns",
-              date: "2025-09-25",
-              outcomes: "Learned custom hooks and context API",
-              recommendations: "Review useEffect cleanup patterns",
-            },
-          ].map((report) => (
-            <div key={report.id} className="report-card">
-              <h3>{report.title}</h3>
-              <p><strong>Date:</strong> {report.date}</p>
-              <p><strong>Outcomes:</strong> {report.outcomes}</p>
-              <p><strong>Recommendations:</strong> {report.recommendations}</p>
-            </div>
-          ))}
-        </section>
-
-        {/* Class Progress */}
-        <section className="dashboard-section">
-          <h2>Class Progress</h2>
-          <div className="progress-bar-container">
-            <div className="progress-bar">
-              <div className="progress-fill" style={{ width: "75%" }}></div>
-            </div>
-            <span className="progress-label">75% Complete</span>
-          </div>
-
-          <div className="topics-list">
-            <h4>Topics Covered:</h4>
-            <ul>
-              <li>React Fundamentals</li>
-              <li>Component Lifecycle</li>
-              <li>State Management</li>
-              <li>Routing</li>
-            </ul>
-          </div>
-        </section>
-
-        {/* Ratings */}
-        <section className="dashboard-section">
-          <h2>Rate Your Experience</h2>
-          <form className="feedback-form">
-            <div>
-              <h3>Lecture Rating</h3>
-              <div className="stars">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <span key={star} className={star <= 4 ? "filled" : ""}>
-                    
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h3>Lecturer Performance</h3>
-              <div className="stars">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <span key={star} className={star <= 5 ? "filled" : ""}>
-                    
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h3>Course Experience</h3>
-              <textarea placeholder="Share your thoughts..." rows="3" />
-            </div>
-
-            <button type="submit" className="submit-btn">
-              Submit Feedback
-            </button>
-          </form>
-        </section>
+        {activeTab === 'overview' && <OverviewPage />}
+        {activeTab === 'ratings' && (
+          <RatingsPage
+            student={student}
+            lecturers={lecturers}
+            loadingLecturers={loadingLecturers}
+          />
+        )}
+        {activeTab === 'complaints' && (
+          <ComplaintsPage
+            student={student}
+            lecturers={lecturers}
+            loadingLecturers={loadingLecturers}
+          />
+        )}
       </main>
 
       <footer className="dashboard-footer">

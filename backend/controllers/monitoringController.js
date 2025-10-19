@@ -1,35 +1,7 @@
 // backend/controllers/monitoringController.js
 const pool = require("../db");
 
-// Get all monitoring entries
-exports.getAllMonitoring = (req, res) => {
-  const query = "SELECT * FROM monitoring";
-  pool.query(query, (err, results) => {
-    if (err) {
-      console.error("❌ Error fetching monitoring entries:", err);
-      return res.status(500).json({ error: "Failed to fetch monitoring data" });
-    }
-    res.json(results);
-  });
-};
-
-// Get monitoring by ID
-exports.getMonitoringById = (req, res) => {
-  const { id } = req.params;
-  const query = "SELECT * FROM monitoring WHERE monitoring_id = ?";
-  pool.query(query, [id], (err, results) => {
-    if (err) {
-      console.error("❌ Error fetching monitoring entry:", err);
-      return res.status(500).json({ error: "Failed to fetch monitoring entry" });
-    }
-    if (results.length === 0) {
-      return res.status(404).json({ error: "Monitoring entry not found" });
-    }
-    res.json(results[0]);
-  });
-};
-
-// Get monitoring dashboard data for a specific lecturer
+// Get monitoring dashboard for a specific lecturer (using user_id from reports)
 exports.getMonitoringByLecturer = (req, res) => {
   const { lecturerId } = req.params;
 
@@ -41,18 +13,18 @@ exports.getMonitoringByLecturer = (req, res) => {
       lr.class_id,
       lr.topic_taught,
       lr.learning_outcome,
-      lr.lecturer_recommenndations,
+      lr.lecturer_recommendations,
       lr.number_of_students_present,
       lr.total_number_of_students_registered,
       c.class_name,
       c.course_id,
       c.venue,
       c.class_time,
-      m.comments AS feedback
+      pf.comments AS feedback
     FROM lecturer_reports lr
-    INNER JOIN classes c ON lr.class_id = c.class_id
-    LEFT JOIN monitoring m ON lr.report_id = m.report_id
-    WHERE c.lecturer_id = ?
+    LEFT JOIN classes c ON lr.class_id = c.class_id
+    LEFT JOIN principal_feedback pf ON lr.report_id = pf.report_id
+    WHERE lr.user_id = ?
     ORDER BY lr.date_of_lecture DESC
   `;
 
@@ -83,7 +55,7 @@ exports.getMonitoringByLecturer = (req, res) => {
         date: row.date_of_lecture,
         topic: row.topic_taught,
         outcome: row.learning_outcome,
-        recommendations: row.lecturer_recommenndations,
+        recommendations: row.lecturer_recommendations,
         attendance: {
           present: row.number_of_students_present,
           registered: row.total_number_of_students_registered,
@@ -92,10 +64,10 @@ exports.getMonitoringByLecturer = (req, res) => {
             : 0
         },
         class: {
-          name: row.class_name,
-          courseId: row.course_id,
-          venue: row.venue,
-          schedule: row.class_time
+          name: row.class_name || "Unknown Class",
+          courseId: row.course_id || row.class_id || "—",
+          venue: row.venue || "—",
+          schedule: row.class_time || "—"
         },
         feedback: row.feedback || "No feedback yet"
       }))
@@ -103,7 +75,7 @@ exports.getMonitoringByLecturer = (req, res) => {
   });
 };
 
-// Get all reports with monitoring feedback (for Principal)
+// ✅ Get all reports with principal feedback (for Principal Lecturer)
 exports.getAllReportsWithMonitoring = (req, res) => {
   const query = `
     SELECT 
@@ -112,108 +84,112 @@ exports.getAllReportsWithMonitoring = (req, res) => {
       lr.date_of_lecture,
       lr.topic_taught,
       lr.learning_outcome,
-      lr.lecturer_recommenndations,
+      lr.lecturer_recommendations,
       lr.number_of_students_present,
       lr.total_number_of_students_registered,
+      lr.class_id,
       c.class_name,
       c.course_id,
       c.venue,
       c.class_time,
-      c.lecturer_id,
-      m.comments AS feedback,
-      m.monitoring_id
+      lr.user_id AS lecturer_id,
+      u.full_names AS lecturer_name,
+      u.user_email AS lecturer_email,
+      pf.comments AS feedback,
+      pf.id AS feedback_id,
+      pf.created_at AS feedback_created_at
     FROM lecturer_reports lr
-    INNER JOIN classes c ON lr.class_id = c.class_id
-    LEFT JOIN monitoring m ON lr.report_id = m.report_id
+    INNER JOIN users u ON lr.user_id = u.user_id
+    LEFT JOIN classes c ON lr.class_id = c.class_id
+    LEFT JOIN principal_feedback pf ON lr.report_id = pf.report_id
     ORDER BY lr.date_of_lecture DESC
   `;
 
   pool.query(query, (err, results) => {
     if (err) {
-      console.error("❌ Error fetching all reports with monitoring:", err);
+      console.error("❌ Error fetching reports with principal feedback:", err);
       return res.status(500).json({ error: "Failed to load reports" });
     }
 
     const reports = results.map(row => ({
-      id: row.report_id,
-      lecturer: `Lecturer ID: ${row.lecturer_id}`,
+      report_id: row.report_id,
+      lecturer: row.lecturer_name || `Lecturer ID: ${row.lecturer_id}`,
       lecturerId: row.lecturer_id,
-      course: row.class_name,
-      courseCode: row.course_id,
-      date: row.date_of_lecture,
-      week: row.week_of_reporting,
-      topic: row.topic_taught,
-      outcomes: row.learning_outcome,
-      recommendations: row.lecturer_recommenndations,
-      actualPresent: row.number_of_students_present,
-      totalRegistered: row.total_number_of_students_registered,
-      venue: row.venue,
-      scheduledTime: row.class_time,
+      lecturerEmail: row.lecturer_email,
+      class_id: row.class_id,
+      class_name: row.class_name || "Unknown Class",
+      courseCode: row.course_id || row.class_id || "—",
+      date_of_lecture: row.date_of_lecture,
+      week_of_reporting: row.week_of_reporting,
+      topic_taught: row.topic_taught,
+      learning_outcome: row.learning_outcome,
+      lecturer_recommendations: row.lecturer_recommendations,
+      number_of_students_present: row.number_of_students_present,
+      total_number_of_students_registered: row.total_number_of_students_registered,
+      venue: row.venue || "—",
+      class_time: row.class_time || "—",
       submittedAt: row.date_of_lecture,
       hasFeedback: !!row.feedback,
       feedback: row.feedback || "",
-      monitoringId: row.monitoring_id
+      feedbackId: row.feedback_id,
+      feedbackCreatedAt: row.feedback_created_at
     }));
 
     res.json(reports);
   });
 };
 
-// Create new monitoring entry
-exports.createMonitoring = (req, res) => {
-  const { user_id, report_id, comments } = req.body;
+// ✅ NEW: Get lecturer performance based on ratings (for Program Leader)
+exports.getLecturerPerformance = (req, res) => {
+  const query = `
+    SELECT 
+      u.user_id AS lecturer_id,
+      u.full_names AS lecturer_name,
+      u.faculty_id,
+      f.faculty_name,
+      COUNT(r.rating_id) AS total_ratings,
+      AVG(r.rating_value) AS avg_rating,
+      GROUP_CONCAT(DISTINCT c.course_id) AS courses
+    FROM users u
+    LEFT JOIN ratings r ON u.user_id = r.lecturer_id
+    LEFT JOIN classes c ON u.user_id = c.lecturer_id
+    LEFT JOIN faculties f ON u.faculty_id = f.faculty_id
+    WHERE u.user_role = 'lecturer'
+    GROUP BY u.user_id, u.full_names, u.faculty_id, f.faculty_name
+    ORDER BY avg_rating DESC
+  `;
 
-  if (user_id == null || report_id == null) {
-    return res.status(400).json({
-      error: "user_id and report_id are required"
+  pool.query(query, (err, results) => {
+    if (err) {
+      console.error("❌ Error fetching lecturer performance:", err);
+      return res.status(500).json({ error: "Failed to load performance data" });
+    }
+
+    const totalLecturers = results.length;
+    const totalCourses = results.reduce((sum, lec) => {
+      return sum + (lec.courses ? lec.courses.split(',').length : 0);
+    }, 0);
+    
+    const validRatings = results.filter(lec => lec.avg_rating != null);
+    const avgTeachingRating = validRatings.length > 0
+      ? parseFloat((validRatings.reduce((sum, lec) => sum + lec.avg_rating, 0) / validRatings.length).toFixed(1))
+      : 0;
+
+    res.json({
+      stats: {
+        totalLecturers,
+        totalCourses,
+        avgTeachingRating,
+        coursesOnTrack: totalCourses
+      },
+      lecturers: results.map(lec => ({
+        id: lec.lecturer_id,
+        name: lec.lecturer_name,
+        courses: lec.courses ? lec.courses.split(',') : [],
+        teachingRating: lec.avg_rating ? parseFloat(lec.avg_rating.toFixed(1)) : 0,
+        faculty: lec.faculty_name || "—",
+        totalRatings: lec.total_ratings || 0
+      }))
     });
-  }
-
-  const query = "INSERT INTO monitoring (user_id, report_id, comments) VALUES (?, ?, ?)";
-
-  pool.query(query, [user_id, report_id, comments || ""], (err, result) => {
-    if (err) {
-      console.error("❌ Error creating monitoring entry:", err);
-      return res.status(500).json({ error: "Failed to create monitoring entry" });
-    }
-    res.status(201).json({
-      message: "Feedback submitted successfully",
-      monitoringId: result.insertId,
-    });
-  });
-};
-
-// Update monitoring entry by ID
-exports.updateMonitoring = (req, res) => {
-  const { id } = req.params;
-  const { user_id, report_id, comments } = req.body;
-
-  const query = "UPDATE monitoring SET user_id = ?, report_id = ?, comments = ? WHERE monitoring_id = ?";
-
-  pool.query(query, [user_id, report_id, comments, id], (err, result) => {
-    if (err) {
-      console.error("❌ Error updating monitoring entry:", err);
-      return res.status(500).json({ error: "Failed to update monitoring entry" });
-    }
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ error: "Monitoring entry not found" });
-    }
-    res.json({ message: "Monitoring entry updated successfully" });
-  });
-};
-
-// Delete monitoring entry by ID
-exports.deleteMonitoring = (req, res) => {
-  const { id } = req.params;
-  const query = "DELETE FROM monitoring WHERE monitoring_id = ?";
-  pool.query(query, [id], (err, result) => {
-    if (err) {
-      console.error("❌ Error deleting monitoring entry:", err);
-      return res.status(500).json({ error: "Failed to delete monitoring entry" });
-    }
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ error: "Monitoring entry not found" });
-    }
-    res.json({ message: "Monitoring entry deleted successfully" });
   });
 };

@@ -1,6 +1,6 @@
 // src/components/Classes.jsx
 import React, { useState, useEffect } from "react";
-import "../style/LecturerPortal.css"; // Reuse your existing CSS
+import "../style/LecturerPortal.css"; // ✅ Correct for Lecturer role
 
 function Classes({ lecturerId }) {
   const [classes, setClasses] = useState([]);
@@ -16,17 +16,11 @@ function Classes({ lecturerId }) {
 
     const fetchClasses = async () => {
       try {
-        // Fetch all classes and filter by lecturer_id on frontend
-        // OR: better — have backend support filtering (see note below)
         const response = await fetch(`http://localhost:5000/api/classes`);
-        
         if (!response.ok) {
           throw new Error("Failed to fetch classes");
         }
-
         const data = await response.json();
-        
-        // Filter classes assigned to this lecturer
         const assignedClasses = data.filter(cls => cls.lecturer_id === lecturerId);
         setClasses(assignedClasses);
       } catch (err) {
@@ -43,7 +37,12 @@ function Classes({ lecturerId }) {
   if (loading) {
     return (
       <div className="dashboard-card">
-        <h2>📚 Assigned Classes</h2>
+        <h2 className="report-title">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+          </svg>
+          Assigned Classes
+        </h2>
         <p>Loading your classes...</p>
       </div>
     );
@@ -52,7 +51,12 @@ function Classes({ lecturerId }) {
   if (error) {
     return (
       <div className="dashboard-card">
-        <h2>📚 Assigned Classes</h2>
+        <h2 className="report-title">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+          </svg>
+          Assigned Classes
+        </h2>
         <div className="status-message error">{error}</div>
       </div>
     );
@@ -60,34 +64,40 @@ function Classes({ lecturerId }) {
 
   return (
     <div className="dashboard-card">
-      <h2 className="report-title">📚 Assigned Classes</h2>
+      <h2 className="report-title">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+        </svg>
+        Assigned Classes
+      </h2>
 
       {classes.length === 0 ? (
         <p className="no-classes">You have no assigned classes at the moment.</p>
       ) : (
-        classes.map((cls) => (
-          <div key={cls.class_id} className="class-item">
-            <h3>
-              {cls.class_name} ({cls.course_id})
-            </h3>
-            <div className="class-details">
-              <div className="class-detail">
-                <strong>Schedule</strong>
-                <span>{cls.class_time || "Not set"}</span>
+        <div className="classes-list">
+          {classes.map((cls) => (
+            <div key={cls.class_id} className="class-card">
+              <div className="class-header">
+                <h3>{cls.class_name}</h3>
+                <span className="course-id-tag">{cls.course_id}</span>
               </div>
-              <div className="class-detail">
-                <strong>Venue</strong>
-                <span>{cls.venue || "—"} </span>
-              </div>
-              <div className="class-detail">
-                <strong>Students</strong>
-                <span>— / — registered</span>
-                {/* ⚠️ Note: Your `classes` table doesn't store student counts.
-                     You may need to join with reports or another table later. */}
+              <div className="class-details-grid">
+                <div className="class-detail-item">
+                  <div className="detail-label">Schedule</div>
+                  <div className="detail-value">{cls.class_time || "Not set"}</div>
+                </div>
+                <div className="class-detail-item">
+                  <div className="detail-label">Venue</div>
+                  <div className="detail-value">{cls.venue || "—"}</div>
+                </div>
+                <div className="class-detail-item">
+                  <div className="detail-label">Students</div>
+                  <div className="detail-value">— / — registered</div>
+                </div>
               </div>
             </div>
-          </div>
-        ))
+          ))}
+        </div>
       )}
     </div>
   );

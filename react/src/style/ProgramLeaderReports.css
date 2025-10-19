@@ -1,0 +1,121 @@
+/* ======================
+   PROGRAM LEADER REPORTS — ADVANCED STYLING
+   ====================== */
+.report-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.report-title svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--accent);
+}
+
+.dashboard-card {
+  width: 100%;
+  padding: 1.5rem;
+}
+
+.no-classes {
+  text-align: center;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-top: 1.5rem;
+}
+
+/* ======================
+   REPORT CARD
+   ====================== */
+.report-card {
+  background: rgba(15, 18, 32, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 1.6rem;
+  margin-bottom: 1.5rem;
+  transition: var(--transition);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.report-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 6px 16px rgba(249, 115, 22, 0.2);
+  transform: translateY(-2px);
+}
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 1rem;
+  align-items: flex-start;
+}
+
+.report-header h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  flex: 1;
+  min-width: 200px;
+}
+
+.report-source {
+  background: rgba(249, 115, 22, 0.15);
+  color: #ffedd5;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.report-card p {
+  margin: 0.6rem 0;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.report-card p strong {
+  color: var(--accent);
+  margin-right: 6px;
+}
+
+.report-content {
+  margin-top: 1.2rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* ======================
+   STATUS & LOADING
+   ====================== */
+.status-message {
+  padding: 12px;
+  border-radius: 12px;
+  margin-top: 1rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.status-message.error {
+  background: rgba(255, 107, 107, 0.15);
+  color: #ff9e9e;
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+/* Loading placeholder */
+.dashboard-card > p {
+  color: var(--text-secondary);
+  font-style: italic;
+}

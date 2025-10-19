@@ -1,0 +1,258 @@
+/* ======================
+   PRINCIPAL RATINGS — ADVANCED STYLING
+   ====================== */
+.report-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.report-title svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--accent);
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+.dashboard-card {
+  width: 100%;
+  padding: 1.5rem;
+}
+
+/* ======================
+   STATUS MESSAGES
+   ====================== */
+.status-message {
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.status-message.success {
+  background: rgba(74, 222, 128, 0.15);
+  color: #c6f9d0;
+  border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+.status-message.error {
+  background: rgba(255, 107, 107, 0.15);
+  color: #ff9e9e;
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+/* ======================
+   TABLE STYLING
+   ====================== */
+.table-container {
+  overflow-x: auto;
+  border-radius: 16px;
+  margin-top: 1rem;
+}
+
+.feedback-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+  background: rgba(15, 18, 32, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.feedback-table th,
+.feedback-table td {
+  padding: 14px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.feedback-table th {
+  font-weight: 700;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: rgba(74, 222, 128, 0.08);
+}
+
+.feedback-table tbody tr:hover {
+  background: rgba(74, 222, 128, 0.05);
+}
+
+.feedback-table td {
+  color: var(--text-primary);
+}
+
+/* Rating Stars */
+.rating-bar {
+  display: flex;
+  gap: 2px;
+  margin-top: 6px;
+}
+
+.star.small {
+  font-size: 0.9rem;
+  color: #444;
+}
+
+.star.small.filled {
+  color: var(--accent);
+}
+
+/* Action Button */
+.btn-rate {
+  padding: 6px 12px;
+  background: rgba(74, 222, 128, 0.15);
+  color: #c6f9d0;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-rate:hover {
+  background: rgba(74, 222, 128, 0.25);
+  transform: translateY(-1px);
+}
+
+/* ======================
+   MODAL OVERLAY
+   ====================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background: var(--card-bg);
+  border-radius: 20px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  text-align: center;
+}
+
+.modal-content h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+}
+
+/* Large Star Rating */
+.rating-scale-large {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 1.2rem;
+}
+
+.star-btn-large {
+  width: 50px;
+  height: 50px;
+  font-size: 2.2rem;
+  background: none;
+  border: none;
+  color: #555;
+  cursor: pointer;
+  transition: var(--transition);
+  -webkit-text-stroke: 0.5px rgba(255, 255, 255, 0.2);
+}
+
+.star-btn-large.active {
+  color: var(--accent);
+  text-shadow: 0 0 15px rgba(74, 222, 128, 0.6);
+  transform: scale(1.15);
+}
+
+.rating-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+}
+
+/* Modal Actions */
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.btn-cancel,
+.btn-submit {
+  padding: 10px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+}
+
+.btn-cancel {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+}
+
+.btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+}
+
+.btn-submit {
+  background: linear-gradient(135deg, var(--accent), #34d399);
+  color: #0f172a;
+  box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3);
+}
+
+.btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(74, 222, 128, 0.4);
+}
+
+/* ======================
+   RESPONSIVE
+   ====================== */
+@media (max-width: 600px) {
+  .feedback-table th,
+  .feedback-table td {
+    padding: 10px 6px;
+    font-size: 0.85rem;
+  }
+
+  .star-btn-large {
+    width: 40px;
+    height: 40px;
+    font-size: 1.8rem;
+  }
+
+  .modal-content {
+    padding: 1.5rem;
+  }
+}

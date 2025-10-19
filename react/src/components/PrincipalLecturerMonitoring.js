@@ -1,35 +1,31 @@
-// src/components/PrincipalLecturerReports.jsx
+// src/components/PrincipalLecturerMonitoring.jsx
 import React, { useState, useEffect } from "react";
-import "../style/LecturerPortal.css";
+import "../style/PrincipalLecturerMonitoring.css"; // ✅ Correct import
 
-function PrincipalLecturerReports({ principalLecturerId }) {
+function PrincipalLecturerMonitoring({ principalLecturerId }) {
   const [reports, setReports] = useState([]);
-  const [feedback, setFeedback] = useState({});
   const [expandedReports, setExpandedReports] = useState(new Set());
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState("");
+  const [newFeedbackText, setNewFeedbackText] = useState({});
 
-  // Fetch real reports from backend
   useEffect(() => {
     const fetchReports = async () => {
       try {
         const response = await fetch("http://localhost:5000/api/monitoring/reports/all");
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
-        }
+        if (!response.ok) throw new Error("Failed to load reports");
         const data = await response.json();
-        setReports(data);
 
-        // Initialize feedback state
-        const initialFeedback = {};
+        const initialText = {};
         data.forEach(report => {
-          initialFeedback[report.id] = "";
+          initialText[report.report_id] = "";
         });
-        setFeedback(initialFeedback);
+
+        setReports(data);
+        setNewFeedbackText(initialText);
       } catch (err) {
-        console.error("Failed to load reports:", err);
-        setMessage("❌ Unable to load lecture reports. Please try again later.");
+        console.error("Error fetching reports:", err);
+        setMessage("❌ Failed to load reports.");
       } finally {
         setLoading(false);
       }
@@ -41,61 +37,89 @@ function PrincipalLecturerReports({ principalLecturerId }) {
   const toggleExpand = (reportId) => {
     setExpandedReports(prev => {
       const newSet = new Set(prev);
-      if (newSet.has(reportId)) {
-        newSet.delete(reportId);
-      } else {
-        newSet.add(reportId);
-      }
+      newSet.has(reportId) ? newSet.delete(reportId) : newSet.add(reportId);
       return newSet;
     });
   };
 
-  const handleFeedbackChange = (reportId, value) => {
-    setFeedback(prev => ({ ...prev, [reportId]: value }));
+  const canEditDelete = (createdAt) => {
+    if (!createdAt) return false;
+    const createdTime = new Date(createdAt).getTime();
+    const now = Date.now();
+    return now - createdTime <= 5 * 60 * 1000;
   };
 
-  const handleSubmitFeedback = async (reportId) => {
-    const comment = feedback[reportId]?.trim();
-    if (!comment) return;
-
-    setSubmitting(true);
-    setMessage("");
-
+  const handleAddFeedback = async (reportId, comment) => {
     try {
-      const payload = {
-        user_id: principalLecturerId,
-        report_id: reportId,
-        comments: comment
-      };
-
-      const response = await fetch("http://localhost:5000/api/monitoring", {
+      const payload = { report_id: reportId, principal_id: principalLecturerId, comments: comment };
+      const res = await fetch("http://localhost:5000/api/principal-feedback", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload)
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
+      if (!res.ok) throw new Error("Submission failed");
 
-      if (!response.ok) {
-        throw new Error("Failed to submit feedback");
-      }
-
-      // Optimistically update UI
       setReports(prev =>
         prev.map(report =>
-          report.id === reportId
-            ? { ...report, hasFeedback: true, feedback: comment }
+          report.report_id === reportId
+            ? { ...report, hasFeedback: true, feedback: comment, feedbackId: null, feedbackCreatedAt: new Date().toISOString() }
             : report
         )
       );
-      setFeedback(prev => ({ ...prev, [reportId]: "" }));
-      setMessage("✅ Feedback submitted successfully!");
+      setNewFeedbackText(prev => ({ ...prev, [reportId]: "" }));
+      setMessage("✅ Feedback submitted!");
       setTimeout(() => setMessage(""), 3000);
     } catch (err) {
-      console.error("Feedback submission error:", err);
-      setMessage("❌ Failed to submit feedback. Please try again.");
-    } finally {
-      setSubmitting(false);
+      setMessage(`❌ ${err.message}`);
+    }
+  };
+
+  const handleUpdateFeedback = async (feedbackId, reportId, comment) => {
+    try {
+      const payload = { principal_id: principalLecturerId, comments: comment };
+      const res = await fetch(`http://localhost:5000/api/principal-feedback/${feedbackId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error("Update failed");
+
+      setReports(prev =>
+        prev.map(report =>
+          report.report_id === reportId
+            ? { ...report, feedback: comment }
+            : report
+        )
+      );
+      setMessage("✅ Feedback updated!");
+      setTimeout(() => setMessage(""), 3000);
+    } catch (err) {
+      setMessage(`❌ ${err.message}`);
+    }
+  };
+
+  const handleDeleteFeedback = async (feedbackId, reportId) => {
+    if (!window.confirm("Are you sure you want to delete this feedback?")) return;
+    try {
+      const payload = { principal_id: principalLecturerId };
+      const res = await fetch(`http://localhost:5000/api/principal-feedback/${feedbackId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error("Delete failed");
+
+      setReports(prev =>
+        prev.map(report =>
+          report.report_id === reportId
+            ? { ...report, hasFeedback: false, feedback: "", feedbackId: null, feedbackCreatedAt: null }
+            : report
+        )
+      );
+      setMessage("✅ Feedback deleted!");
+      setTimeout(() => setMessage(""), 3000);
+    } catch (err) {
+      setMessage(`❌ ${err.message}`);
     }
   };
 
@@ -111,79 +135,62 @@ function PrincipalLecturerReports({ principalLecturerId }) {
   if (loading) {
     return (
       <div className="dashboard-card">
-        <h2 className="report-title">📝 Lecture Reports</h2>
+        <h2 className="report-title">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+          </svg>
+          Lecture Reports
+        </h2>
         <p>Loading reports...</p>
       </div>
     );
   }
 
-  const pendingFeedbackCount = reports.filter(r => !r.hasFeedback).length;
-  const thisWeekCount = reports.filter(r => {
-    const reportDate = new Date(r.date);
-    const weekAgo = new Date();
-    weekAgo.setDate(weekAgo.getDate() - 7);
-    return reportDate >= weekAgo;
-  }).length;
-
   return (
     <div className="dashboard-card">
-      <h2 className="report-title">📝 Lecture Reports</h2>
-      <p className="subtitle">
-        Review reports submitted by lecturers and provide constructive feedback
-      </p>
-      
+      <h2 className="report-title">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+        </svg>
+        Lecture Reports
+      </h2>
+      <p className="subtitle">Review reports and provide feedback</p>
+
       {message && (
         <div className={`status-message ${message.includes("✅") ? "success" : "error"}`}>
           {message}
         </div>
       )}
 
-      <div className="reports-summary">
-        <div className="summary-item">
-          <span className="summary-label">Total Reports</span>
-          <span className="summary-value">{reports.length}</span>
-        </div>
-        <div className="summary-item">
-          <span className="summary-label">Pending Feedback</span>
-          <span className="summary-value">{pendingFeedbackCount}</span>
-        </div>
-        <div className="summary-item">
-          <span className="summary-label">This Week</span>
-          <span className="summary-value">{thisWeekCount}</span>
-        </div>
-      </div>
-
       {reports.length === 0 ? (
-        <p className="no-classes">No lecture reports found.</p>
+        <p className="no-classes">No reports found.</p>
       ) : (
         reports.map(report => {
-          const attendanceStatus = getAttendanceStatus(report.actualPresent, report.totalRegistered);
-          const isExpanded = expandedReports.has(report.id);
-          
+          const isExpanded = expandedReports.has(report.report_id);
+          const attendance = getAttendanceStatus(
+            report.number_of_students_present,
+            report.total_number_of_students_registered
+          );
+
           return (
-            <div key={report.id} className="report-card">
+            <div key={report.report_id} className="report-card">
               <div className="report-header">
                 <div className="report-info">
-                  <h3 className="report-course">
-                    {report.course} ({report.courseCode})
-                  </h3>
+                  <h3 className="report-course">{report.class_id || "Unknown Class"}</h3>
                   <div className="report-meta">
                     <span className="lecturer-name">by {report.lecturer}</span>
-                    <span className="report-date">• {report.date} ({report.week})</span>
+                    <span className="report-date">• Week: {report.week_of_reporting}</span>
+                  </div>
+                  <div className="lecturer-email">
+                    📧 {report.lecturerEmail}
                   </div>
                 </div>
-                
                 <div className="report-actions">
-                  <div className="attendance-badge" style={{ backgroundColor: attendanceStatus.color }}>
-                    {report.actualPresent}/{report.totalRegistered} present
-                    <span className="attendance-status">({attendanceStatus.text})</span>
+                  <div className="attendance-badge" style={{ backgroundColor: attendance.color }}>
+                    {report.number_of_students_present}/{report.total_number_of_students_registered}
+                    <span className="attendance-status">({attendance.text})</span>
                   </div>
-                  <button 
-                    className="expand-btn"
-                    onClick={() => toggleExpand(report.id)}
-                    aria-label={isExpanded ? "Collapse report" : "Expand report"}
-                    disabled={submitting}
-                  >
+                  <button className="expand-btn" onClick={() => toggleExpand(report.report_id)}>
                     {isExpanded ? '▲' : '▼'}
                   </button>
                 </div>
@@ -191,69 +198,73 @@ function PrincipalLecturerReports({ principalLecturerId }) {
 
               {isExpanded && (
                 <div className="report-details">
-                  <div className="detail-grid">
-                    <div className="detail-item">
-                      <span className="detail-label">Topic Taught</span>
-                      <span className="detail-value">{report.topic}</span>
-                    </div>
-                    <div className="detail-item">
-                      <span className="detail-label">Venue & Time</span>
-                      <span className="detail-value">{report.venue}, {report.scheduledTime}</span>
-                    </div>
-                    <div className="detail-item">
-                      <span className="detail-label">Submitted</span>
-                      <span className="detail-value">
-                        {new Date(report.submittedAt).toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="detail-section">
-                    <h4>Learning Outcomes</h4>
-                    <p className="outcomes-text">{report.outcomes}</p>
-                  </div>
-
-                  <div className="detail-section">
-                    <h4>Recommendations</h4>
-                    <p className="recommendations-text">{report.recommendations}</p>
-                  </div>
+                  <p><strong>Topic:</strong> {report.topic_taught}</p>
+                  <p><strong>Learning Outcome:</strong> {report.learning_outcome}</p>
+                  <p><strong>Recommendations:</strong> {report.lecturer_recommenndations}</p>
+                  <p><strong>Venue:</strong> {report.venue || "—"}</p>
+                  <p><strong>Schedule:</strong> {report.class_time || "—"}</p>
                 </div>
               )}
 
+              {/* Feedback Section */}
               <div className="feedback-section">
-                {report.hasFeedback && (
+                {report.hasFeedback && report.feedback ? (
                   <div className="existing-feedback">
-                    <h4>Your Previous Feedback</h4>
                     <div className="feedback-content">
                       <p>"{report.feedback}"</p>
                       <div className="feedback-meta">
-                        <span className="feedback-date">
-                          Submitted on {new Date(report.submittedAt).toLocaleDateString()}
-                        </span>
+                        <span>by Principal</span>
+                        <span> • {new Date(report.feedbackCreatedAt).toLocaleString()}</span>
+                        {canEditDelete(report.feedbackCreatedAt) && (
+                          <span className="feedback-actions">
+                            <button
+                              className="btn-edit"
+                              onClick={() => {
+                                const newComment = prompt("Edit your feedback:", report.feedback);
+                                if (newComment && newComment.trim()) {
+                                  handleUpdateFeedback(report.feedbackId, report.report_id, newComment.trim());
+                                }
+                              }}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              className="btn-delete"
+                              onClick={() => handleDeleteFeedback(report.feedbackId, report.report_id)}
+                            >
+                              Delete
+                            </button>
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
+                ) : (
+                  <div className="new-feedback">
+                    <textarea
+                      className="feedback-textarea"
+                      value={newFeedbackText[report.report_id] || ""}
+                      onChange={(e) => setNewFeedbackText(prev => ({
+                        ...prev,
+                        [report.report_id]: e.target.value
+                      }))}
+                      placeholder="Write your feedback for this report..."
+                      rows="3"
+                    />
+                    <button
+                      className="submit-feedback-btn"
+                      onClick={() => {
+                        const comment = newFeedbackText[report.report_id]?.trim();
+                        if (comment) {
+                          handleAddFeedback(report.report_id, comment);
+                        }
+                      }}
+                      disabled={!newFeedbackText[report.report_id]?.trim()}
+                    >
+                      Submit Feedback
+                    </button>
+                  </div>
                 )}
-                
-                <div className="new-feedback">
-                  <h4>{report.hasFeedback ? "Add Additional Feedback" : "Provide Feedback to Lecturer"}</h4>
-                  <textarea
-                    className="feedback-textarea"
-                    value={feedback[report.id] || ""}
-                    onChange={(e) => handleFeedbackChange(report.id, e.target.value)}
-                    placeholder="Share your constructive feedback..."
-                    rows="3"
-                    disabled={submitting}
-                  />
-                  <button 
-                    className="submit-feedback-btn"
-                    onClick={() => handleSubmitFeedback(report.id)}
-                    disabled={!feedback[report.id]?.trim() || submitting}
-                  >
-                    {submitting ? "Submitting..." : 
-                      report.hasFeedback ? "Submit Additional Feedback" : "Submit Feedback"}
-                  </button>
-                </div>
               </div>
             </div>
           );
@@ -263,4 +274,4 @@ function PrincipalLecturerReports({ principalLecturerId }) {
   );
 }
 
-export default PrincipalLecturerReports;
+export default PrincipalLecturerMonitoring;

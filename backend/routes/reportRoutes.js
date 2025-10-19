@@ -1,12 +1,11 @@
-// backend/routes/reportRoutes.js
 const express = require("express");
 const router = express.Router();
 const reportController = require("../controllers/reportController");
 
-// GET all reports
-router.get("/", reportController.getAllReports);
+// GET reports for a specific lecturer (by user_id)
+router.get("/user/:userId", reportController.getReportsByLecturer);
 
-// GET single report by ID
+// GET single report (public read — or restrict if needed)
 router.get("/:id", reportController.getReportById);
 
 // POST create new report

@@ -1,0 +1,238 @@
+/* ======================
+   PROGRAM LEADER MONITORING — ADVANCED STYLING (HORIZONTAL LAYOUT)
+   ====================== */
+.report-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.report-title svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--accent);
+}
+
+.dashboard-card {
+  width: 100%;
+  padding: 1.5rem;
+}
+
+.no-classes {
+  text-align: center;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-top: 1.5rem;
+}
+
+/* ======================
+   STATS GRID
+   ====================== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 2.5rem;
+}
+
+.stat-card {
+  background: rgba(15, 18, 32, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 1.4rem;
+  text-align: center;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: var(--transition);
+}
+
+.stat-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(249, 115, 22, 0.2);
+}
+
+.stat-label {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.6rem;
+}
+
+.stat-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+/* ======================
+   HORIZONTAL LECTURER CAROUSEL
+   ====================== */
+.dashboard-card h3 {
+  font-size: 1.4rem;
+  margin: 2rem 0 1.2rem;
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.lecturers-carousel {
+  display: flex;
+  gap: 1.4rem;
+  overflow-x: auto;
+  padding: 0.8rem 0;
+  margin-top: 0.8rem;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) rgba(255, 255, 255, 0.1);
+}
+
+/* WebKit scrollbar (Chrome, Safari) */
+.lecturers-carousel::-webkit-scrollbar {
+  height: 8px;
+}
+
+.lecturers-carousel::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.lecturers-carousel::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 4px;
+}
+
+.lecturer-card {
+  background: rgba(15, 18, 32, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 1.4rem;
+  min-width: 280px;
+  max-width: 320px;
+  scroll-snap-align: start;
+  transition: var(--transition);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.lecturer-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 6px 16px rgba(249, 115, 22, 0.2);
+  transform: translateY(-2px);
+}
+
+.lecturer-card h3 {
+  font-size: 1.25rem;
+  margin: 0 0 0.8rem;
+  color: var(--text-primary);
+}
+
+.lecturer-card p {
+  margin: 0.4rem 0;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.lecturer-card p strong {
+  color: var(--accent);
+  margin-right: 6px;
+}
+
+/* Metrics */
+.lecturer-metrics {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.star-rating {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffd700;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+}
+
+.performance-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.performance-on-track {
+  background: rgba(74, 222, 128, 0.15);
+  color: #d1fae5;
+}
+
+.performance-needs-attention {
+  background: rgba(255, 152, 0, 0.15);
+  color: #ffecb3;
+}
+
+/* ======================
+   STATUS & LOADING
+   ====================== */
+.status-message {
+  padding: 12px;
+  border-radius: 12px;
+  margin-top: 1rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.status-message.error {
+  background: rgba(255, 107, 107, 0.15);
+  color: #ff9e9e;
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+/* Loading placeholder */
+.dashboard-card > p {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* ======================
+   RESPONSIVE
+   ====================== */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .lecturer-card {
+    min-width: 240px;
+    padding: 1.2rem;
+  }
+
+  .report-title {
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lecturer-card {
+    min-width: 220px;
+    padding: 1rem;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+}

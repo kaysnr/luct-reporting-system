@@ -12,22 +12,25 @@ const ratingsRoutes = require("./routes/ratingsRoutes");
 const coursesRoutes = require("./routes/coursesRoutes");
 const facultiesRoutes = require("./routes/facultiesRoutes");
 
+// 👇 NEW ROUTES
+const complaintRoutes = require("./routes/complaintRoutes");
+const lecturerRoutes = require("./routes/lecturerRoutes");
+const feedbackRoutes = require("./routes/feedbackRoutes");
+
+// 👇 ADD THIS: Principal feedback routes
+const principalFeedbackRoutes = require("./routes/principalFeedbackRoutes");
+
 const app = express();
 
-// =======================
-// ✅ Middleware
-// =======================
 app.use(cors({
   origin: process.env.FRONTEND_URL || "http://localhost:3000",
   credentials: true
 }));
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // Only if you need form data
+app.use(express.urlencoded({ extended: true })); 
 
-// =======================
-// ✅ Routes
-// =======================
+// Existing routes
 app.use("/auth", authRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/classes", classesRoutes);
@@ -35,6 +38,14 @@ app.use("/api/monitoring", monitoringRoutes);
 app.use("/api/ratings", ratingsRoutes);
 app.use("/api/courses", coursesRoutes);
 app.use("/api/faculties", facultiesRoutes);
+
+// 👇 NEW ROUTE MOUNTS
+app.use("/api/complaints", complaintRoutes);
+app.use("/api/lecturers", lecturerRoutes);
+app.use("/api/feedback", feedbackRoutes);
+
+// 👇 MOUNT PRINCIPAL FEEDBACK ROUTES
+app.use("/api/principal-feedback", principalFeedbackRoutes);
 
 // =======================
 // ✅ Root Route
@@ -67,9 +78,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// =======================
-// ✅ Server Start
-// =======================
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);

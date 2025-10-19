@@ -1,147 +1,281 @@
-/* ===== GLOBAL RESET & TYPOGRAPHY ===== */
-.home-container {
-  background-color: #1e1e2e;
-  color: #e0e0ff;
-  min-height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  padding: 0;
+/* ======================
+   GLOBAL RESET & VARIABLES
+   ====================== */
+:root {
+  --bg-primary: #0c0f1a;
+  --bg-secondary: #14182b;
+  --card-bg: rgba(25, 28, 48, 0.75);
+  --text-primary: #f0f4ff;
+  --text-secondary: #a0a9c9;
+  --accent-student: #6e56ff;
+  --accent-lecturer: #ff6b6b;
+  --accent-principal: #4ade80;
+  --accent-leader: #f97316;
+  --glow-student: 0 0 20px rgba(110, 86, 255, 0.4);
+  --glow-lecturer: 0 0 20px rgba(255, 107, 107, 0.4);
+  --glow-principal: 0 0 20px rgba(74, 222, 128, 0.4);
+  --glow-leader: 0 0 20px rgba(249, 115, 22, 0.4);
+  --border-radius: 20px;
+  --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+* {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/*HEADER */
+body {
+  background: linear-gradient(135deg, var(--bg-primary), #1a1f36);
+  color: var(--text-primary);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ======================
+   LOADING SCREEN
+   ====================== */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.6s ease;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-top: 4px solid var(--accent-student);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ======================
+   HEADER & LOGO
+   ====================== */
 .home-header {
-  background-color: #161625;
-  padding: 1.2rem 2rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-}
-
-.logo-wrapper {
+  padding: 2rem 5%;
   display: flex;
   justify-content: center;
 }
 
 .main-logo {
   height: 60px;
-  max-width: 300px;
-  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
+  transition: var(--transition);
 }
 
-/* ===== HERO SECTION ===== */
+.main-logo:hover {
+  transform: scale(1.05);
+}
+
+/* ======================
+   HERO SECTION
+   ====================== */
 .hero {
   text-align: center;
-  padding: 3rem 1.5rem;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.hero-title {
-  font-size: 2.2rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  color: white;
-  line-height: 1.3;
-}
-
-.hero-subtitle {
-  font-size: 1.1rem;
-  color: #a9a9d6;
-  font-weight: 400;
-}
-
-/* ===== ROLE SECTION ===== */
-.section-title {
-  text-align: center;
-  font-size: 1.8rem;
-  margin: 2.5rem 0 1.5rem;
-  color: white;
-  font-weight: 600;
-}
-
-.role-section {
-  padding: 0 1.5rem 2rem;
-}
-
-.role-cards {
-  display: flex;
-  gap: 20px; /* space between boxes */
-  flex-wrap: wrap; /* in case screen is too small */
-  justify-content: center;
-  padding: 20px;
-}
-
-.role-card {
-background: #2d2d3f; /* dark background */
-border-radius: 12px;
-padding: 20px;
-width: 220px; /* smaller width */
-text-align: center;
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-transition: transform 0.2s ease;
-color: white;
-}
-
-.role-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
-  border-color: #7c4dff;
-}
-
-.role-card.student:hover {
-  border-color: #7c4dff;
-  background: linear-gradient(145deg, #252536, #2d2d3f);
-}
-
-.role-card.lecturer:hover {
-  border-color: #4fc3f7;
-  background: linear-gradient(145deg, #252536, #2d2d3f);
-}
-
-.role-card.principal:hover {
-  border-color: #69f0ae;
-  background: linear-gradient(145deg, #252536, #2d2d3f);
-}
-
-.role-card.leader:hover {
-  border-color: #ff9800;
-  background: linear-gradient(145deg, #252536, #2d2d3f);
-}
-
-.role-icon {
-  font-size: 2.2rem;
-}
-
-.role-card h3 {
-  font-size: 1.3rem;
-  margin: 0;
-  color: white;
-}
-
-.role-card p {
-  font-size: 0.95rem;
-  color: #b0b0d0;
-  margin: 0;
-}
-
-
-.role-card:hover {
-  transform: none;
-  box-shadow: none;
-}
-
-/*EVENTS SECTION */
-.events-section {
-  padding: 0 1.5rem 3rem;
+  padding: 3rem 5%;
   max-width: 900px;
   margin: 0 auto;
 }
 
+.hero-title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  background: linear-gradient(to right, #ffffff, #a0a9c9);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  font-weight: 400;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ======================
+   ROLE SELECTION CARDS
+   ====================== */
+.section-title {
+  text-align: center;
+  font-size: 2rem;
+  margin: 3rem 0 2rem;
+  font-weight: 700;
+  color: #e0e7ff;
+  position: relative;
+}
+
+.section-title::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(to right, var(--accent-student), var(--accent-leader));
+  margin: 10px auto;
+  border-radius: 2px;
+}
+
+.role-section {
+  padding: 0 5% 4rem;
+}
+
+.role-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.role-card {
+  background: var(--card-bg);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  outline: none;
+}
+
+.role-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--accent-student);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.role-card.student::before { background: var(--accent-student); }
+.role-card.lecturer::before { background: var(--accent-lecturer); }
+.role-card.principal::before { background: var(--accent-principal); }
+.role-card.leader::before { background: var(--accent-leader); }
+
+.role-card:hover::before {
+  transform: scaleX(1);
+}
+
+.role-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--glow-student);
+}
+
+.role-card.lecturer:hover { box-shadow: var(--glow-lecturer); }
+.role-card.principal:hover { box-shadow: var(--glow-principal); }
+.role-card.leader:hover { box-shadow: var(--glow-leader); }
+
+.role-icon {
+  font-size: 0;
+  margin-bottom: 1.2rem;
+  display: inline-block;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* === CUSTOM SVG ICONS === */
+.role-icon svg {
+  width: 100%;
+  height: 100%;
+  transition: var(--transition);
+}
+
+.role-card:hover .role-icon svg {
+  transform: scale(1.15) rotate(5deg);
+}
+
+/* Student Icon */
+.role-card.student .role-icon svg path {
+  fill: var(--accent-student);
+  stroke: rgba(110, 86, 255, 0.3);
+  stroke-width: 2;
+}
+
+/* Lecturer Icon */
+.role-card.lecturer .role-icon svg path {
+  fill: var(--accent-lecturer);
+}
+
+/* Principal Icon */
+.role-card.principal .role-icon svg path {
+  fill: var(--accent-principal);
+}
+
+/* Leader Icon */
+.role-card.leader .role-icon svg path {
+  fill: var(--accent-leader);
+}
+
+.role-card h3 {
+  font-size: 1.4rem;
+  margin-bottom: 0.8rem;
+  font-weight: 700;
+}
+
+.role-card p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* ======================
+   EVENTS SECTION (ANIMATED CAROUSEL)
+   ====================== */
+.events-section {
+  padding: 0 5% 5rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
 .event-card {
-  background: #2d2d3f;
-  border-radius: 12px;
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  animation: slideInUp 0.8s ease-out;
 }
 
 @media (min-width: 768px) {
@@ -154,78 +288,120 @@ color: white;
   width: 100%;
   height: 200px;
   object-fit: cover;
+  filter: brightness(0.85) contrast(1.1);
+  transition: var(--transition);
 }
 
-@media (min-width: 768px) {
-  .event-image {
-    width: 300px;
-    height: auto;
-  }
+.event-card:hover .event-image {
+  transform: scale(1.03);
+  filter: brightness(0.95) contrast(1.2);
 }
 
 .event-content {
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
+  padding: 1.8rem;
+  flex: 1;
 }
 
 .event-content h3 {
-  color: white;
-  margin: 0;
-  font-size: 1.4rem;
+  font-size: 1.6rem;
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.event-content h3 svg {
+  width: 28px;
+  height: 28px;
+  fill: var(--accent-principal);
 }
 
 .event-content p {
-  color: #c0c0e0;
+  color: var(--text-secondary);
   line-height: 1.6;
-  margin: 0;
+  margin-bottom: 1rem;
 }
 
 .event-date {
-  color: #7c4dff;
+  display: inline-block;
+  background: rgba(74, 222, 128, 0.15);
+  color: #c6f9d0;
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-size: 0.9rem;
   font-weight: 600;
-  font-size: 0.95rem;
 }
 
-/* ===== FOOTER ===== */
+/* === ANIMATED EVENTS CAROUSEL === */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Auto-rotating events (simulate multiple events) */
+@keyframes rotateEvents {
+  0%, 100% { opacity: 1; transform: translateY(0); }
+  12.5%, 87.5% { opacity: 0; transform: translateY(20px); }
+}
+
+/* If you later add more events, wrap them in .events-container and use this */
+/* For now, we simulate with pseudo-animation on single card */
+.event-card {
+  animation: pulseGlow 8s infinite alternate;
+}
+
+@keyframes pulseGlow {
+  0% { box-shadow: var(--shadow); }
+  100% { box-shadow: var(--shadow), 0 0 25px rgba(74, 222, 128, 0.25); }
+}
+
+/* ======================
+   FOOTER
+   ====================== */
 .home-footer {
   text-align: center;
-  padding: 1.5rem;
-  color: #888;
+  padding: 2rem;
+  color: var(--text-secondary);
   font-size: 0.9rem;
-  border-top: 1px solid #333;
-  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(12, 15, 26, 0.7);
+  backdrop-filter: blur(10px);
 }
 
-/* ===== LOADING SCREEN ===== */
-.loading-screen {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #1e1e2e;
-  color: white;
-  font-family: Arial, sans-serif;
+/* ======================
+   RESPONSIVE
+   ====================== */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.2rem;
+  }
+
+  .role-cards {
+    grid-template-columns: 1fr;
+    padding: 0 1rem;
+  }
+
+  .event-content {
+    padding: 1.5rem;
+  }
 }
 
-.spinner {
-  width: 50px;
-  height: 50px;
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  border-top: 4px solid #7c4dff;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 20px;
-}
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.8rem;
+  }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
+  .section-title {
+    font-size: 1.6rem;
+  }
 
-.loading-screen p {
-  font-size: 1.1rem;
-  color: #ccc;
+  .main-logo {
+    height: 50px;
+  }
 }

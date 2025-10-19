@@ -1,4 +1,5 @@
-const db = require('../db'); // your existing db connection
+// backend/controllers/coursesController.js
+const db = require('../db');
 
 // GET all courses
 const getAllCourses = (req, res) => {
@@ -8,34 +9,39 @@ const getAllCourses = (req, res) => {
       console.error('DB Error:', err);
       return res.status(500).json({ error: 'Failed to fetch courses' });
     }
-    // Frontend expects an array of course objects with course_id, etc.
     res.json(results);
   });
 };
 
 // POST: Create new course
 const createCourse = (req, res) => {
-  const { faculty_id, course_name, course_code, credits, semester } = req.body;
+  const { faculty_id, lecturer_id, course_name, course_code, credits, semester } = req.body;
 
-  if (!faculty_id || !course_name || !course_code || credits == null || !semester) {
+  // ✅ Validate ALL required fields (including lecturer_id)
+  if (
+    !faculty_id || 
+    lecturer_id == null ||  // Allow 0 as valid, but not undefined/null
+    !course_name || 
+    !course_code || 
+    credits == null || 
+    !semester
+  ) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
   const query = `
-    INSERT INTO courses (faculty_id, course_name, course_code, credits, semester)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO courses (faculty_id, lecturer_id, course_name, course_code, credits, semester)
+    VALUES (?, ?, ?, ?, ?, ?)
   `;
 
   db.query(
     query,
-    [faculty_id, course_name, course_code, credits, semester],
+    [faculty_id, lecturer_id, course_name, course_code, credits, semester],
     (err, result) => {
       if (err) {
         console.error('DB Insert Error:', err);
         return res.status(500).json({ error: 'Failed to create course' });
       }
-
-      // ✅ IMPORTANT: Frontend expects { courseId: ... }
       res.status(201).json({ courseId: result.insertId });
     }
   );
@@ -44,17 +50,23 @@ const createCourse = (req, res) => {
 // PUT: Update course
 const updateCourse = (req, res) => {
   const { id } = req.params;
-  const { faculty_id, course_name, course_code, credits, semester } = req.body;
+  const { faculty_id, lecturer_id, course_name, course_code, credits, semester } = req.body;
 
   const query = `
     UPDATE courses
-    SET faculty_id = ?, course_name = ?, course_code = ?, credits = ?, semester = ?
+    SET 
+      faculty_id = ?, 
+      lecturer_id = ?, 
+      course_name = ?, 
+      course_code = ?, 
+      credits = ?, 
+      semester = ?
     WHERE course_id = ?
   `;
 
   db.query(
     query,
-    [faculty_id, course_name, course_code, credits, semester, id],
+    [faculty_id, lecturer_id, course_name, course_code, credits, semester, id],
     (err, result) => {
       if (err) {
         console.error('DB Update Error:', err);

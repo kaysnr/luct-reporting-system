@@ -173,46 +173,62 @@ function Homescreen() {
       <section className="role-section">
         <h2 className="section-title">Access Your Portal</h2>
         <div className="role-cards">
-          {/* Student Card - CLICKABLE */}
+          {/* Student Card */}
           <button 
             className="role-card student" 
             onClick={handleStudentClick}
             aria-label="Student Login"
           >
-            <div className="role-icon">🎓</div>
+            <div className="role-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+              </svg>
+            </div>
             <h3>Students</h3>
             <p>View attendance, grades, and course progress</p>
           </button>
 
-          {/* Lecturer Card - CLICKABLE */}
+          {/* Lecturer Card */}
           <button 
             className="role-card lecturer" 
             onClick={handleLecturerClick}
             aria-label="Lecturer Login"
           >
-            <div className="role-icon">👨‍🏫</div>
+            <div className="role-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+            </div>
             <h3>Lecturers</h3>
             <p>Manage classes, reports, and assessments</p>
           </button>
 
-          {/* Principal Lecturer Card - CLICKABLE */}
+          {/* Principal Lecturer Card */}
           <button 
             className="role-card principal" 
             onClick={handlePrincipalLecturerClick}
             aria-label="Principal Lecturer Login"
           >
-            <div className="role-icon">👔</div>
+            <div className="role-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            </div>
             <h3>Principal Lecturers</h3>
             <p>Oversee academic performance & compliance</p>
           </button>
 
-          {/* Program Leader Card - CLICKABLE */}
+          {/* Program Leader Card */}
           <button 
             className="role-card leader" 
             onClick={handleProgramLeaderClick}
             aria-label="Program Leader Login"
           >
-            <div className="role-icon">📊</div>
+            <div className="role-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+              </svg>
+            </div>
             <h3>Program Leaders</h3>
             <p>Monitor curriculum and strategic outcomes</p>
           </button>
@@ -229,7 +245,12 @@ function Homescreen() {
             className="event-image" 
           />
           <div className="event-content">
-            <h3>🎓 Graduation Ceremony</h3>
+            <h3>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+              </svg>
+              Graduation Ceremony
+            </h3>
             <p>
               Join us in celebrating the achievements of our graduating students.
               A proud moment for students, lecturers, and families 🎉
@@ -237,6 +258,8 @@ function Homescreen() {
             <span className="event-date">📅 June 15, 2025 • 10:00 AM</span>
           </div>
         </div>
+
+        {/* FUTURE: Add more .event-card elements here for auto-rotating carousel */}
       </section>
 
       {/* Footer */}
